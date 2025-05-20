@@ -1,8 +1,5 @@
-import { useEffect, useState, useRef } from "react";
-import { MapContainer, Popup, TileLayer, useMapEvents, useMap } from "react-leaflet";
-import MapMarker from "./MapMarker";
-import './MapView.css';
-import { OverpassElement } from "../types/OverpassTypes";
+import React from "react";
+import { useMap } from "react-leaflet";
 
 interface ResetViewProps {
     userLocation: L.LatLngExpression;
