@@ -1,22 +1,37 @@
 import { useEffect, useState, useRef } from "react";
-import { MapContainer, Popup, TileLayer, useMapEvents} from "react-leaflet";
+import { MapContainer, Popup, TileLayer, useMapEvents, useMap} from "react-leaflet";
 import MapMarker from "./MapMarker";
 import ResetViewButton from "./ResetViewButton";
+import SearchBar from "./SearchBar";
 import './MapView.css';
 import { OverpassElement } from "../types/OverpassTypes";
 
 const DEFAULT_ZOOM = 15;
 
+// Helper component to set the mapRef
+const MapRefSetter = ({ mapRef }: { mapRef: React.MutableRefObject<L.Map | null> }) => {
+  const map = useMap();
+  useEffect(() => {
+    mapRef.current = map;
+  }, [map]);
+  return null;
+};
+
 const MapView = () => {
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [benchLocations, setBenchLocations] = useState<OverpassElement[]>([]);
+  const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
 
-  // Fetch user's location
+  // Reference to the map instance - aids in changing the map location on search
+  const mapRef = useRef<L.Map | null>(null);
+ 
+  //Set the initial map center to user location if available
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        setUserLocation([position.coords.latitude, position.coords.longitude]);
-        console.log("User location:", position.coords);
+        const loc: [number, number] = [position.coords.latitude, position.coords.longitude];
+        setUserLocation(loc);
+        setMapCenter(loc);
       },
       (error) => {
         console.error("Error fetching user location:", error);
@@ -77,15 +92,24 @@ const MapView = () => {
 
     return null;
   };
-  
 
-  if (!userLocation) {
+  if (!userLocation || !mapCenter) {
     return <div>Loading user location...</div>;
   }
   
   return (
     <div className="map-wrapper">
-      <MapContainer center={userLocation} zoom={DEFAULT_ZOOM} scrollWheelZoom={true}>
+      <SearchBar onSearch={(lat, lon) => {
+        if (mapRef.current) {
+          mapRef.current.setView([lat, lon], DEFAULT_ZOOM);
+        }
+      }} />
+      <MapContainer 
+        center={mapCenter} 
+        zoom={DEFAULT_ZOOM} 
+        scrollWheelZoom={true}
+      >
+        <MapRefSetter mapRef={mapRef}/>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
