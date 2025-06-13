@@ -3,6 +3,7 @@ import { MapContainer, Popup, TileLayer, useMapEvents, useMap} from "react-leafl
 import MapMarker from "./MapMarker";
 import ResetViewButton from "./ResetViewButton";
 import LocationSearchBar from "./LocationSearchBar";
+import BenchPopup from "./BenchPopup";
 import '../stylesheets/MapView.css';
 import { OverpassElement } from "../types/OverpassTypes";
 
@@ -156,7 +157,9 @@ const MapView = () => {
           {/* Bench markers */}
           {benchLocations.map((bench) => (
             <MapMarker key={bench.id} position={[bench.lat, bench.lon]} iconType="bench">
-              <Popup>Bench ID: {bench.id}</Popup>
+              <Popup>
+                <BenchPopup bench={bench}/>
+              </Popup>
             </MapMarker>
           ))}
         </MapContainer>
