@@ -4,14 +4,17 @@ import { useMap } from "react-leaflet";
 interface ResetViewProps {
     userLocation: L.LatLngExpression;
     defaultZoom: number; 
+    setUserMarkerCallback: () => void; // Callback to reset user location marker
   }
 
-const ResetViewButton: React.FC<ResetViewProps> = ({ userLocation, defaultZoom }) => {
+const ResetViewButton: React.FC<ResetViewProps> = (
+  { userLocation, defaultZoom, setUserMarkerCallback }) => {
   const map = useMap();
 
   const handleClick = () => {
     if (userLocation) {
       map.setView(userLocation, defaultZoom);
+      setUserMarkerCallback();
     }
   };
 

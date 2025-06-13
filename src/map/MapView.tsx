@@ -13,11 +13,12 @@ const MapRefSetter = ({ mapRef }: { mapRef: React.MutableRefObject<L.Map | null>
   const map = useMap();
   useEffect(() => {
     mapRef.current = map;
-  }, [map]);
+  }, [map, mapRef]);
   return null;
 };
 
 const MapView = () => {
+  const [userGeoLocation, setUserGeoLocation] = useState<[number, number] | null>(null);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [benchLocations, setBenchLocations] = useState<OverpassElement[]>([]);
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
@@ -27,9 +28,11 @@ const MapView = () => {
  
   //Set the initial map center to user location if available
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
+    //Using watchPosition to get user's current location dynamically and update if they move
+    const watchId = navigator.geolocation.watchPosition(
       (position) => {
         const loc: [number, number] = [position.coords.latitude, position.coords.longitude];
+        setUserGeoLocation(loc);
         setUserLocation(loc);
         setMapCenter(loc);
       },
@@ -37,10 +40,25 @@ const MapView = () => {
         console.error("Error fetching user location:", error);
       }
     );
+    //Stop watching the user's location when the component unmounts
+    return () => navigator.geolocation.clearWatch(watchId);
   }, []);
+
+  // Reference to store the last bounds fetched
+  // This helps in preventing unnecessary API calls if the bounds haven't changed
+  // This is useful to avoid flickering of bench markers when the map is moved slightly
+  // and to ensure that benches are fetched only when the bounds actually change
+  const lastBoundsRef = useRef<string | null>(null);
 
   // Fetch bench locations from Overpass API
   const fetchBenchLocations = (bounds: string) => {
+    // If the bounds haven't changed since the last fetch, skip the API call
+    if (lastBoundsRef.current === bounds) {
+      return;
+    }
+    // Update the last bounds reference to the current bounds
+    // This ensures that the next fetch will only happen if the bounds change
+    lastBoundsRef.current = bounds;
     // Overpass API query to fetch bench locations within the given bounds
     const query = `
       [out:json];
@@ -51,7 +69,10 @@ const MapView = () => {
     fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`)
       .then((response) => response.json())
       .then((data) => {
-        setBenchLocations(data.elements || []);
+        // Only update if data actually changed
+        if (JSON.stringify(data.elements) !== JSON.stringify(benchLocations)) {
+          setBenchLocations(data.elements || []);           
+        }
       })
       .catch((error) => {
         console.error("Error fetching bench locations:", error);
@@ -73,7 +94,7 @@ const MapView = () => {
           const bounds = map.getBounds();
           const boundsString = `${bounds.getSouth()},${bounds.getWest()},${bounds.getNorth()},${bounds.getEast()}`;
           fetchBenchLocations(boundsString);
-        }, 400); // 400ms debounce
+        }, 500); 
       },
     });
 
@@ -93,17 +114,20 @@ const MapView = () => {
     return null;
   };
 
-  if (!userLocation || !mapCenter) {
+  if (!userLocation || !mapCenter || !userGeoLocation) {
     return <div>Loading user location...</div>;
   }
   
   return (
     <div className="map-wrapper">
       <SearchBar onSearch={(lat, lon) => {
-        if (mapRef.current) {
-          mapRef.current.setView([lat, lon], DEFAULT_ZOOM);
-        }
-      }} />
+          if (mapRef.current) {
+            mapRef.current.setView([lat, lon], DEFAULT_ZOOM);
+          }
+          setUserLocation([lat, lon]);   // ensure user location is updated to the searched location
+          setMapCenter([lat, lon]);  // update map center to the searched location
+        }} 
+      />
       <MapContainer 
         center={mapCenter} 
         zoom={DEFAULT_ZOOM} 
@@ -116,7 +140,11 @@ const MapView = () => {
         />
         <MapEventHandler />
         {/* Button to restore user location */}
-        <ResetViewButton userLocation={userLocation} defaultZoom={DEFAULT_ZOOM} />
+        <ResetViewButton 
+          userLocation={userGeoLocation} 
+          defaultZoom={DEFAULT_ZOOM} 
+          setUserMarkerCallback = {() => setUserLocation(userGeoLocation)}
+        />
         {/* User location marker */}
         <MapMarker position={userLocation} iconType="user">
           <Popup>You are here</Popup>
