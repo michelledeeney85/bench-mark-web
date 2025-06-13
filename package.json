@@ -2,7 +2,7 @@
   "name": "bench-mark-web",
   "private": true,
   "version": "1.0.0",
-  "homepage": "https://michelledeeney85.github.io/",
+  "homepage": "https://michelledeeney85.github.io/bench-mark-web/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -13,7 +13,8 @@
     "leaflet": "^1.9.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-leaflet": "^5.0.0"
+    "react-leaflet": "^5.0.0",
+    "react-router-dom": "^7.6.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
