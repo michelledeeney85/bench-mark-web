@@ -1,8 +1,7 @@
 {
-  "name": "BenchMark Web",
+  "name": "bench-mark-web",
   "private": true,
   "version": "1.0.0",
-  "homepage": "https://michelledeeney85.github.io/bench-mark-web/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
