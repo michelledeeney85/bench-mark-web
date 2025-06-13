@@ -14,7 +14,7 @@ const BenchPopup: React.FC<BenchPopupProps> = ({ bench }) => {
             <h3>{bench.tags?.name || "Unnamed Bench"}</h3>
             <p>Location: {bench.lat.toFixed(6)}, {bench.lon.toFixed(6)}</p>
             <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
-                Get Directions To Bench On Google Maps
+                Get Directions (opens google maps)
             </a>
         </div>
     );
