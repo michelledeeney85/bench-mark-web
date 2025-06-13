@@ -88,15 +88,9 @@ const LocationSearchBar = ({ onSearch, userLocation }: LocationSearchProps) => {
   };
 
   return (
-    <div style={{ position: "absolute", top: 10, left: 10, zIndex: 1000, width: 300 }}>
+    <div className="location-search-bar">
       <form
-        onSubmit={handleSearch}
-        style={{
-          background: "#fff",
-          padding: 8,
-          borderRadius: 4,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-        }}
+        onSubmit={handleSearch}        
         autoComplete="off"
       >
         <input
@@ -104,9 +98,8 @@ const LocationSearchBar = ({ onSearch, userLocation }: LocationSearchProps) => {
           value={query}
           placeholder="Search address..."
           onChange={e => setQuery(e.target.value)}
-          style={{ padding: 4, width: 180 }}
         />
-        <button type="submit" disabled={loading} style={{ marginLeft: 4 }}>
+        <button className="go-button" type="submit" disabled={loading}>
           {loading ? "Searching..." : "Go"}
         </button>
       </form>

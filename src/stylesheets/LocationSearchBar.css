@@ -1,0 +1,31 @@
+.location-search-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.location-search-bar form {
+    background: #fff;
+    padding: 8px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.location-search-bar input {
+  padding: 4;
+  width: 180;
+}
+.go-button {
+  padding: 10px 15px;
+  margin-left: 4;
+  background-color: #007bff;
+  color: white;
+  border: solid 10px black !important;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.go-button:hover {
+  background-color: #0056b3;
+}
