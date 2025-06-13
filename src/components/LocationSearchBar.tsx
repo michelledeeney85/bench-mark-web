@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../stylesheets/LocationSearchBar.css"; 
 
 // Type definitions for Nominatim search results (Nominatim is an OpenStreetMap search service)
 interface NominatimResult {
@@ -47,7 +48,7 @@ const LocationSearchBar = ({ onSearch, userLocation }: LocationSearchProps) => {
     setShowResults(false);
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
+        `https://nominatim.openstreetmap.org/search?format=json&dedupe=1&limit=20&q=${encodeURIComponent(query)}`
       );
       let data: NominatimResult[] = await res.json();
 
@@ -104,36 +105,21 @@ const LocationSearchBar = ({ onSearch, userLocation }: LocationSearchProps) => {
         </button>
       </form>
       {showResults && results.length > 0 && (
-        <div
-          style={{
-            maxHeight: 250,
-            overflowY: "auto",
-            background: "#fff",
-            borderRadius: 4,
-            marginTop: 4,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            padding: 0,
-          }}
-        >
-          {results.map((result, idx) => (
-            <div
-              key={idx}
-              onClick={() => handleResultClick(result.lat, result.lon)}
-              style={{
-                padding: "8px 12px",
-                borderBottom: idx !== results.length - 1 ? "1px solid #eee" : "none",
-                cursor: "pointer",
-                fontSize: 14,
-              }}
-              title={result.display_name}
-            >
-              {userLocation && result._distance !== undefined && (
-                <span style={{ color: "#888", fontSize: 12, marginLeft: 8 }}>
-                  {result.display_name} : ({result._distance!.toFixed(1)} km)
-                </span>
-              )}
-            </div>
-          ))}
+      <div className="location-results-container">
+        {results.map((result, idx) => (
+          <div className="location-result-item"
+            key={idx}
+            style={{ borderBottom: idx !== results.length - 1 ? "1px solid #eee" : "none" }}
+            onClick={() => handleResultClick(result.lat, result.lon)}            
+            title={result.display_name}
+          >
+            {userLocation && result._distance !== undefined && (
+              <span>
+                {result.display_name} : ({result._distance!.toFixed(1)} km)
+              </span>
+            )}
+          </div>
+        ))}
         </div>
       )}
     </div>
