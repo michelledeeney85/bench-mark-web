@@ -2,8 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import { MapContainer, Popup, TileLayer, useMapEvents, useMap} from "react-leaflet";
 import MapMarker from "./MapMarker";
 import ResetViewButton from "./ResetViewButton";
-import SearchBar from "./SearchBar";
-import './MapView.css';
+import LocationSearchBar from "./LocationSearchBar";
+import '../stylesheets/MapView.css';
 import { OverpassElement } from "../types/OverpassTypes";
 
 const DEFAULT_ZOOM = 15;
@@ -119,43 +119,48 @@ const MapView = () => {
   }
   
   return (
-    <div className="map-wrapper">
-      <SearchBar onSearch={(lat, lon) => {
+    <div className="mapview-flex-container">
+      <div className="mapview-sidebar">
+        <LocationSearchBar onSearch={(lat, lon) => {
           if (mapRef.current) {
             mapRef.current.setView([lat, lon], DEFAULT_ZOOM);
           }
           setUserLocation([lat, lon]);   // ensure user location is updated to the searched location
           setMapCenter([lat, lon]);  // update map center to the searched location
-        }} 
-      />
-      <MapContainer 
-        center={mapCenter} 
-        zoom={DEFAULT_ZOOM} 
-        scrollWheelZoom={true}
-      >
-        <MapRefSetter mapRef={mapRef}/>
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          }} 
+          userLocation={userGeoLocation}
         />
-        <MapEventHandler />
-        {/* Button to restore user location */}
-        <ResetViewButton 
-          userLocation={userGeoLocation} 
-          defaultZoom={DEFAULT_ZOOM} 
-          setUserMarkerCallback = {() => setUserLocation(userGeoLocation)}
-        />
-        {/* User location marker */}
-        <MapMarker position={userLocation} iconType="user">
-          <Popup>You are here</Popup>
-        </MapMarker>
-        {/* Bench markers */}
-        {benchLocations.map((bench) => (
-          <MapMarker key={bench.id} position={[bench.lat, bench.lon]} iconType="bench">
-            <Popup>Bench ID: {bench.id}</Popup>
+      </div>
+      <div className="mapview-map">
+        <MapContainer 
+          center={mapCenter} 
+          zoom={DEFAULT_ZOOM} 
+          scrollWheelZoom={true}
+        >
+          <MapRefSetter mapRef={mapRef}/>
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <MapEventHandler />
+          {/* Button to restore user location */}
+          <ResetViewButton 
+            userLocation={userGeoLocation} 
+            defaultZoom={DEFAULT_ZOOM} 
+            setUserMarkerCallback = {() => setUserLocation(userGeoLocation)}
+          />
+          {/* User location marker */}
+          <MapMarker position={userLocation} iconType="user">
+            <Popup>You are here</Popup>
           </MapMarker>
-        ))}
-      </MapContainer>
+          {/* Bench markers */}
+          {benchLocations.map((bench) => (
+            <MapMarker key={bench.id} position={[bench.lat, bench.lon]} iconType="bench">
+              <Popup>Bench ID: {bench.id}</Popup>
+            </MapMarker>
+          ))}
+        </MapContainer>
+      </div>  
     </div>    
   );
 };
