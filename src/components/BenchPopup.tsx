@@ -10,10 +10,15 @@ const BenchPopup: React.FC<BenchPopupProps> = ({ bench }) => {
     const googleMapsUrl = 
     `https://www.google.com/maps/dir/?api=1&destination=${bench.lat},${bench.lon}`;
 
+    const updateInfoUrl =
+    `https://www.openstreetmap.org/edit?editor=id&node=${bench.id}`;
+
     return (
-        <div>
-            <h3>{bench.tags?.name || "Unnamed Bench"}</h3>            
-            <div className="bench-info">
+        <div className="bench-popup">
+            <div className="bench-header no-bottom-border">
+                <b>{bench.tags?.name || `BenchID : ${bench.id}`}</b>
+            </div>            
+            <div className="bench-info no-bottom-border">
                 <h4>Bench Info:</h4>
                 {bench.tags?.backrest !== undefined && (
                     <p>Backrest: {bench.tags!.backrest ? "Yes" : "No"}</p>
@@ -26,10 +31,16 @@ const BenchPopup: React.FC<BenchPopupProps> = ({ bench }) => {
                 )}
                 <p>Location: {bench.lat.toFixed(6)}, {bench.lon.toFixed(6)}</p>
             </div>
-            <br />           
-            <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
-                Get Directions (opens google maps)
-            </a>
+            <div className="bench-button no-bottom-border">
+                <a href={updateInfoUrl} target="_blank" rel="noopener noreferrer">
+                    Edit Bench Info (via OpenStreetMap)
+                </a>
+            </div> 
+            <div className="bench-button">
+                <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
+                    Get Directions (via Google Maps)
+                </a>
+            </div>     
         </div>
     );
 };
