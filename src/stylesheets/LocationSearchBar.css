@@ -1,5 +1,7 @@
 .location-search-bar input {
   width: 180px; 
+  border: 2px solid purple;
+  border-radius: 10px;
 }
 
 .location-results-container{

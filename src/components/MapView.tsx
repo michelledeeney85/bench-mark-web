@@ -133,7 +133,7 @@ const MapView = () => {
         </div>     
       </div>
       <div className="mapview-flex-container">      
-        <div className="mapview-searchbar">
+        <div className="mapview-toolbar">
           <LocationSearchBar onSearch={(lat, lon) => {
             if (mapRef.current) {
               mapRef.current.setView([lat, lon], DEFAULT_ZOOM);
