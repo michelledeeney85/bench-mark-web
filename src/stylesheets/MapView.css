@@ -1,3 +1,9 @@
+.benchmark-main-page{
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+
 .mapview-flex-container {
   display: flex;
   height: 100vh;
@@ -39,6 +45,45 @@
   box-sizing: border-box;
 }
 
+.mapview-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 5px solid #d6c1ff; /* very pale purple */
+  background: #f7f3ff;       /* very pale purple background */
+  border-radius: 10px;
+  padding: 10px 0 10px 0;
+  margin: 10px 0;
+  width: 98vw;  
+}
+
+.mapview-title .flex-row {
+  display: flex;
+  align-items: center;
+  width: 50vw;
+  justify-content: center;
+}
+
+.mapview-title .flex-col{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 50vw;
+  justify-content: center;
+}
+
+.mapview-title img {
+  height: 10rem;      /* match h1 font size */
+  width: 10rem;       /* square */
+  object-fit: contain;
+  display: block;
+}
+.mapviewtitle h2, h3, p{
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+
 /* Responsive for mobile */
 @media (max-width: 700px) {
   .mapview-flex-container {
@@ -62,20 +107,12 @@
   .mapview-map {
     width: 100vw;
     min-width: 0;
-    min-height: 0;
+    min-height: 100vw !important;
     border: 5px solid black;
     box-sizing: border-box;
     margin: 0;
     flex: 1 1 auto;
     overflow: hidden;
     position: relative;
-    height: 100%; /* Let flexbox control height */
-  }
-  .mapview-map .leaflet-container {
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 0;
-    min-width: 0;
-    box-sizing: border-box;
   }
 }
