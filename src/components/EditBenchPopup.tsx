@@ -1,11 +1,11 @@
 import { OverpassElement } from "../types/OverpassTypes";
-import "../stylesheets/BenchPopup.css";
+import "../stylesheets/EditBenchPopup.css";
 
-interface BenchPopupProps {
+interface EditBenchPopupProps {
     bench: OverpassElement;
   }
   
-const BenchPopup: React.FC<BenchPopupProps> = ({ bench }) => {
+const EditBenchPopup: React.FC<EditBenchPopupProps> = ({ bench }) => {
 
     const googleMapsUrl = 
     `https://www.google.com/maps/dir/?api=1&destination=${bench.lat},${bench.lon}`;
@@ -45,4 +45,4 @@ const BenchPopup: React.FC<BenchPopupProps> = ({ bench }) => {
     );
 };
   
-export default BenchPopup;
+export default EditBenchPopup;

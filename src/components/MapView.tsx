@@ -3,10 +3,12 @@ import { MapContainer, Popup, TileLayer, useMapEvents, useMap} from "react-leafl
 import MapMarker from "./MapMarker";
 import ResetViewButton from "./ResetViewButton";
 import LocationSearchBar from "./LocationSearchBar";
-import BenchPopup from "./BenchPopup";
+import EditBenchPopup from "./EditBenchPopup";
 import '../stylesheets/MapView.css';
 import { OverpassElement } from "../types/OverpassTypes";
 import benchMarkerIcon from '../assets/benchMarker.png';
+import AddBenchButton from "./AddBenchButton";
+import AddBenchPopup from "./AddBenchPopup";
 
 const DEFAULT_ZOOM = 15;
 
@@ -19,11 +21,29 @@ const MapRefSetter = ({ mapRef }: { mapRef: React.MutableRefObject<L.Map | null>
   return null;
 };
 
+interface AddBenchMapClickProps {
+  onPick: (coords: [number, number]) => void;
+  showPopup: (show: boolean) => void;
+}
+
+const AddBenchMapClick: React.FC<AddBenchMapClickProps> = ({ onPick, showPopup }) => {
+  useMapEvents({
+    click(e) {
+      onPick([e.latlng.lat, e.latlng.lng]);
+      showPopup(true);
+    }
+  });
+  return null;
+};
+
 const MapView = () => {
   const [userGeoLocation, setUserGeoLocation] = useState<[number, number] | null>(null);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [benchLocations, setBenchLocations] = useState<OverpassElement[]>([]);
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
+  const [addBenchMode, setAddBenchMode] = useState(false);
+  const [newBenchCoords, setNewBenchCoords] = useState<[number, number] | null>(null);
+  const [showAddBenchPopup, setShowAddBenchPopup] = useState(false);
 
   // Reference to the map instance - aids in changing the map location on search
   const mapRef = useRef<L.Map | null>(null);
@@ -45,7 +65,7 @@ const MapView = () => {
     //Stop watching the user's location when the component unmounts
     return () => navigator.geolocation.clearWatch(watchId);
   }, []);
-
+ 
   // Reference to store the last bounds fetched
   // This helps in preventing unnecessary API calls if the bounds haven't changed
   // This is useful to avoid flickering of bench markers when the map is moved slightly
@@ -117,7 +137,7 @@ const MapView = () => {
   };
 
   if (!userLocation || !mapCenter || !userGeoLocation) {
-    return <div>Loading user location. You may need to allow location permissions.</div>;
+    return <div>Loading user location... (You may need to allow location permissions).</div>;
   }
   
   return (
@@ -143,6 +163,10 @@ const MapView = () => {
             }} 
             userLocation={userGeoLocation}
           />
+          <AddBenchButton
+              onStartAddBench={() => setAddBenchMode(true)}
+              disabled={addBenchMode}
+          />
         </div>
         <div className="mapview-map">
           <MapContainer 
@@ -150,6 +174,12 @@ const MapView = () => {
             zoom={DEFAULT_ZOOM} 
             scrollWheelZoom={true}
           >
+            {addBenchMode && (
+              <AddBenchMapClick
+                onPick={setNewBenchCoords}
+                showPopup={setShowAddBenchPopup}
+              />
+            )}
             <MapRefSetter mapRef={mapRef}/>
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -170,11 +200,21 @@ const MapView = () => {
             {benchLocations.map((bench) => (
               <MapMarker key={bench.id} position={[bench.lat, bench.lon]} iconType="bench">
                 <Popup>
-                  <BenchPopup bench={bench}/>
+                  <EditBenchPopup bench={bench}/>
                 </Popup>
               </MapMarker>
             ))}
           </MapContainer>
+          {showAddBenchPopup && (
+            <AddBenchPopup 
+              coords={newBenchCoords!} 
+              onCancelCallback={() => {
+                setShowAddBenchPopup(false);
+                setAddBenchMode(false);
+                setNewBenchCoords(null);
+              }} 
+            />
+          )}
         </div>  
       </div>    
     </div>    
