@@ -1,22 +1,18 @@
 .location-search-bar input {
-  width: 180px; 
-  border: 2px solid purple;
   border-radius: 10px;
+  max-width: 250px;
 }
 
 .location-results-container{
   max-height: 250;
   overflow-y: auto;
-  background: #fff;
   border-radius: 4;
   margin-top: 4;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 .location-result-item{
   padding: 8px 12px;  
   cursor: pointer;
   font-size: 14px;
-  color: #888;
   margin-left: 8;
 }

@@ -1,7 +1,6 @@
 .add-bench-popup-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,17 +8,23 @@
 }
 
 .add-bench-popup {
-  background: #fff;
   border-radius: 10px;
   padding: 24px 32px;
   box-shadow: 0 2px 16px rgba(0,0,0,0.2);
   max-width: 90vw;
   min-width: 260px;
   text-align: center;
+  border: 2px solid var(--border-color);
+  background: var(--main-bg);
 }
 
 .add-bench-popup-buttons {
   margin-top: 16px;
   display: flex;
   justify-content: center;
+}
+
+.add-missing-bench-button{
+  max-width: 340px;
+  
 }

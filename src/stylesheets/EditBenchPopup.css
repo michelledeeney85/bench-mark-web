@@ -1,17 +1,14 @@
 .bench-popup{
   text-align: center;
-  background: aliceblue;
 }
 
 .bench-header{
   font-size: 16px;
-  border: 1px solid black;
   padding: 5px;
   border-radius: 5px;
 }
 
 .bench-info{
-  border: 1px solid black;
   padding: 5px;
   border-radius: 5px;
 }
@@ -27,19 +24,19 @@
 }
 
 .bench-button{
-  border: 1px solid;
-  border-radius: 5px;
   padding: 0;
   overflow: hidden;
   display: block;;
 }
 
 .bench-button a{
-  color: black;
   display: block;
   font-weight: bold;
   padding: 10px 5px;
   border-radius: 5px;
+  background: var(--button-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
   transition: background 0.2s, color 0.2s;
 } 
 
@@ -49,5 +46,6 @@
 }
 
 .no-bottom-border{
-  border-bottom: none;
+  background: var(--button-hover);
+  color: var(--text-color);
 }

@@ -26,8 +26,6 @@ const ResetViewButton: React.FC<ResetViewProps> = (
         right: 10,
         zIndex: 1000,
         padding: "8px 12px",
-        background: "#fff",
-        border: "1px solid #888",
         borderRadius: "4px",
         cursor: "pointer"
       }}

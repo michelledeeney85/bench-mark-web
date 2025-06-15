@@ -135,10 +135,7 @@ const MapView = () => {
 
     return null;
   };
-
-  if (!userLocation || !mapCenter || !userGeoLocation) {
-    return <div>Loading user location... (You may need to allow location permissions).</div>;
-  }
+  
   
   return (
     <div className="benchmark-main-page">
@@ -168,54 +165,62 @@ const MapView = () => {
               disabled={addBenchMode}
           />
         </div>
-        <div className="mapview-map">
-          <MapContainer 
-            center={mapCenter} 
-            zoom={DEFAULT_ZOOM} 
-            scrollWheelZoom={true}
-          >
-            {addBenchMode && (
-              <AddBenchMapClick
-                onPick={setNewBenchCoords}
-                showPopup={setShowAddBenchPopup}
+        {(!userLocation || !mapCenter || !userGeoLocation)?
+        ( <div className="mapview-loading">
+            <h2>Loading map...</h2>
+            <h4>Bear with us, getting data from OpenStreetMap, which is sometimes slow if their server is busy...</h4>
+            <p>(Also - make sure you have location services enabled in your browser.)</p>
+          </div>
+        ):
+        ( <div className="mapview-map">
+            <MapContainer 
+              center={mapCenter} 
+              zoom={DEFAULT_ZOOM} 
+              scrollWheelZoom={true}
+            >
+              {addBenchMode && (
+                <AddBenchMapClick
+                  onPick={setNewBenchCoords}
+                  showPopup={setShowAddBenchPopup}
+                />
+              )}
+              <MapRefSetter mapRef={mapRef}/>
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <MapEventHandler />
+              {/* Button to restore user location */}
+              <ResetViewButton 
+                userLocation={userGeoLocation} 
+                defaultZoom={DEFAULT_ZOOM} 
+                setUserMarkerCallback = {() => setUserLocation(userGeoLocation)}
+              />
+              {/* User location marker */}
+              <MapMarker position={userLocation} iconType="user">
+                <Popup>You are here</Popup>
+              </MapMarker>
+              {/* Bench markers */}
+              {benchLocations.map((bench) => (
+                <MapMarker key={bench.id} position={[bench.lat, bench.lon]} iconType="bench">
+                  <Popup>
+                    <EditBenchPopup bench={bench}/>
+                  </Popup>
+                </MapMarker>
+              ))}
+            </MapContainer>
+            {showAddBenchPopup && (
+              <AddBenchPopup 
+                coords={newBenchCoords!} 
+                onCancelCallback={() => {
+                  setShowAddBenchPopup(false);
+                  setAddBenchMode(false);
+                  setNewBenchCoords(null);
+                }} 
               />
             )}
-            <MapRefSetter mapRef={mapRef}/>
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <MapEventHandler />
-            {/* Button to restore user location */}
-            <ResetViewButton 
-              userLocation={userGeoLocation} 
-              defaultZoom={DEFAULT_ZOOM} 
-              setUserMarkerCallback = {() => setUserLocation(userGeoLocation)}
-            />
-            {/* User location marker */}
-            <MapMarker position={userLocation} iconType="user">
-              <Popup>You are here</Popup>
-            </MapMarker>
-            {/* Bench markers */}
-            {benchLocations.map((bench) => (
-              <MapMarker key={bench.id} position={[bench.lat, bench.lon]} iconType="bench">
-                <Popup>
-                  <EditBenchPopup bench={bench}/>
-                </Popup>
-              </MapMarker>
-            ))}
-          </MapContainer>
-          {showAddBenchPopup && (
-            <AddBenchPopup 
-              coords={newBenchCoords!} 
-              onCancelCallback={() => {
-                setShowAddBenchPopup(false);
-                setAddBenchMode(false);
-                setNewBenchCoords(null);
-              }} 
-            />
-          )}
-        </div>  
+          </div>  
+        )}        
       </div>    
     </div>    
   );
