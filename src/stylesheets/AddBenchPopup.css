@@ -25,6 +25,11 @@
 }
 
 .add-missing-bench-button{
-  max-width: 340px;
-  
+  width: 100%;  
+}
+
+@media (max-width: 800px) {
+  .add-missing-bench-button{
+    width: 97vw;  
+  }
 }

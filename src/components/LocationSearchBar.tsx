@@ -90,11 +90,11 @@ const LocationSearchBar = ({ onSearch, userLocation }: LocationSearchProps) => {
 
   return (
     <div className="location-search-bar">
-      <form
+      <form 
         onSubmit={handleSearch}        
         autoComplete="off"
       >
-        <input
+        <input 
           type="text"
           value={query}
           placeholder="Search address..."
