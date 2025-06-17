@@ -39,11 +39,11 @@
   border: 1px solid var(--border-color);
   transition: background 0.2s, color 0.2s;
 } 
-
-.bench-button a:hover,
-.bench-button a:focus {
-  background: lightcyan;
+.bench-button a:hover{
+  background: var(--button-hover);
+  color: var(--text-color);
 }
+
 
 .no-bottom-border{
   background: var(--button-hover);

@@ -2,15 +2,14 @@ import React from "react";
 
 interface AddMissingBenchProps {
   onStartAddBench: () => void;
-  disabled?: boolean;
+  isAddBenchMode?: boolean;
 }
 
-const AddMissingBench: React.FC<AddMissingBenchProps> = ({ onStartAddBench, disabled }) => (
+const AddMissingBench: React.FC<AddMissingBenchProps> = ({ onStartAddBench, isAddBenchMode }) => (
   <button className="add-missing-bench-button"
     onClick={onStartAddBench}
-    disabled={disabled}
   >
-    {disabled ? "Click map to pick location..." : "Missing Bench? Click to Add (via OpenStreetMap)"}
+    {isAddBenchMode ? "Click map to pick location...(or click button again to cancel)" : "Missing Bench? Click to Add (via OpenStreetMap)"}
   </button>
 );
 

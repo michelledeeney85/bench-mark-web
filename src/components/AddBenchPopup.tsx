@@ -18,14 +18,11 @@ const AddBenchPopup: React.FC<AddBenchPopupProps> = ({ coords, onCancelCallback 
   return (
     <div className="add-bench-popup-overlay">
       <div className="add-bench-popup">
-        <h3>Add a Bench</h3>
+        <h3>Add a Bench</h3><br/>
         <p>
-          You picked: <b>{coords[0].toFixed(6)}, {coords[1].toFixed(6)}</b>
-        </p>
-        <p>
-          You will be redirected to OpenStreetMap.<br />
-          Please use their tutorial if you are unsure how to add a bench.<br />
-          <p>Click "Continue" to proceed.</p>
+          You will be redirected to OpenStreetMap's edit tool.<br />
+          Thank you for contributing!<br /><br />
+          Click "Continue" to proceed.
         </p>
         <div className="add-bench-popup-buttons">
           <button onClick={onCancelCallback}>Cancel</button>
