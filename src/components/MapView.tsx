@@ -1,23 +1,27 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { MapContainer, Popup, TileLayer, useMapEvents, useMap} from "react-leaflet";
 import MapMarker from "./MapMarker";
 import ResetViewButton from "./ResetViewButton";
-import LocationSearchBar from "./LocationSearchBar";
 import EditBenchPopup from "./EditBenchPopup";
 import '../stylesheets/MapView.css';
-import { OverpassElement } from "../types/OverpassTypes";
-import benchMarkerIcon from '../assets/benchMarker.png';
-import AddBenchButton from "./AddBenchButton";
 import AddBenchPopup from "./AddBenchPopup";
+import TitleBar from "./TitleBar";
+import LoadingMap from "./LoadingMap";
+import { FC } from "react";
+import { useMapStore, MapStore } from "../store/MapStore";
+import ToolBar from "./ToolBar";
 
-const DEFAULT_ZOOM = 15;
+
 
 // Helper component to set the mapRef
-const MapRefSetter = ({ mapRef }: { mapRef: React.MutableRefObject<L.Map | null> }) => {
+const MapRefSetter = () => {
   const map = useMap();
+  const setMapRef = useMapStore(state => state.setMapRef);
+
   useEffect(() => {
-    mapRef.current = map;
-  }, [map, mapRef]);
+    setMapRef(map);
+  }, [map, setMapRef]);
+
   return null;
 };
 
@@ -26,7 +30,7 @@ interface AddBenchMapClickProps {
   showPopup: (show: boolean) => void;
 }
 
-const AddBenchMapClick: React.FC<AddBenchMapClickProps> = ({ onPick, showPopup }) => {
+const AddBenchMapClick: FC<AddBenchMapClickProps> = ({ onPick, showPopup }) => {
   useMapEvents({
     click(e) {
       onPick([e.latlng.lat, e.latlng.lng]);
@@ -37,16 +41,31 @@ const AddBenchMapClick: React.FC<AddBenchMapClickProps> = ({ onPick, showPopup }
 };
 
 const MapView = () => {
-  const [userGeoLocation, setUserGeoLocation] = useState<[number, number] | null>(null);
-  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
-  const [benchLocations, setBenchLocations] = useState<OverpassElement[]>([]);
-  const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
-  const [addBenchMode, setAddBenchMode] = useState(false);
-  const [newBenchCoords, setNewBenchCoords] = useState<[number, number] | null>(null);
-  const [showAddBenchPopup, setShowAddBenchPopup] = useState(false);
 
-  // Reference to the map instance - aids in changing the map location on search
-  const mapRef = useRef<L.Map | null>(null);
+//Imports from the zustand store
+const userGeoLocation = useMapStore((state :MapStore) => state.userGeoLocation);
+const setUserGeoLocation = useMapStore((state :MapStore) => state.setUserGeoLocation);
+
+const userLocation = useMapStore((state :MapStore) => state.userLocation);
+const setUserLocation = useMapStore((state :MapStore) => state.setUserLocation);
+
+const benchLocations = useMapStore((state :MapStore) => state.benchLocations);
+const setBenchLocations = useMapStore((state :MapStore) => state.setBenchLocations);
+
+const mapCenter = useMapStore((state :MapStore) => state.mapCenter);
+const setMapCenter = useMapStore((state :MapStore) => state.setMapCenter);
+
+const addBenchMode = useMapStore((state :MapStore) => state.addBenchMode);
+const setAddBenchMode = useMapStore((state :MapStore) => state.setAddBenchMode);
+
+const newBenchCoords = useMapStore((state :MapStore) => state.newBenchCoords);
+const setNewBenchCoords = useMapStore((state :MapStore) => state.setNewBenchCoords);
+
+const showAddBenchPopup = useMapStore((state :MapStore) => state.showAddBenchPopup);
+const setShowAddBenchPopup = useMapStore((state :MapStore) => state.setShowAddBenchPopup);
+
+const DEFAULT_ZOOM = useMapStore((state :MapStore) => state.DEFAULT_ZOOM);
+
  
   //Set the initial map center to user location if available
   useEffect(() => {
@@ -64,7 +83,7 @@ const MapView = () => {
     );
     //Stop watching the user's location when the component unmounts
     return () => navigator.geolocation.clearWatch(watchId);
-  }, []);
+  }, [setMapCenter, setUserGeoLocation, setUserLocation]);
  
   // Reference to store the last bounds fetched
   // This helps in preventing unnecessary API calls if the bounds haven't changed
@@ -139,39 +158,11 @@ const MapView = () => {
   
   return (
     <div className="benchmark-main-page">
-      <div className="mapview-title">
-        <div className="flex-row">
-          <img src={benchMarkerIcon}/>
-          <div className="flex-col">
-            <h2>BenchMark</h2>     
-            <h3>Find benches near you!</h3>
-            <p>(Web version 1.0)</p>
-          </div>
-        </div>     
-      </div>
+      <TitleBar />
       <div className="mapview-flex-container">      
-        <div className="mapview-toolbar">
-          <LocationSearchBar onSearch={(lat, lon) => {
-            if (mapRef.current) {
-              mapRef.current.setView([lat, lon], DEFAULT_ZOOM);
-            }
-            setUserLocation([lat, lon]);   // ensure user location is updated to the searched location
-            setMapCenter([lat, lon]);  // update map center to the searched location
-            }} 
-            userLocation={userGeoLocation}
-          />
-          <AddBenchButton
-              onStartAddBench={() => setAddBenchMode(!addBenchMode)}
-              isAddBenchMode={addBenchMode}
-          />
-        </div>
+        <ToolBar />
         {(!userLocation || !mapCenter || !userGeoLocation)?
-        ( <div className="mapview-loading">
-            <h2>Loading map...</h2>
-            <h4>Bear with us, getting bench data from OpenStreetMap...</h4>
-            <p>(Also - make sure you have location enabled in your browser.)</p>
-          </div>
-        ):
+        ( <LoadingMap/> ):
         ( <div className="mapview-map">
             <MapContainer 
               center={mapCenter} 
@@ -184,7 +175,7 @@ const MapView = () => {
                   showPopup={setShowAddBenchPopup}
                 />
               )}
-              <MapRefSetter mapRef={mapRef}/>
+              <MapRefSetter />
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
