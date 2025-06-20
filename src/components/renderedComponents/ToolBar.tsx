@@ -1,6 +1,6 @@
 import LocationSearchBar  from "./LocationSearchBar";
 import AddBenchButton from "./AddBenchButton";
-import { useMapStore, MapStore } from "../store/MapStore";
+import { useMapStore, MapStore } from "../../store/MapStore";
 
 
 

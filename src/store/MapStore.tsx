@@ -1,7 +1,13 @@
 import { create } from "zustand";
 import { OverpassElement } from "../types/OverpassTypes";
 
+/**
+ * Store for managing map-related state
+ * This store holds the user's geolocation, bench locations, map center,
+ * and other related states for the map component.
+ */
 export interface MapStore {
+
   userGeoLocation: [number, number] | null;
   setUserGeoLocation: (coords: [number, number] | null) => void;
 
@@ -27,6 +33,12 @@ export interface MapStore {
 
   mapRef: L.Map | null;
   setMapRef: (ref: L.Map | null) => void;
+
+  debounceRef : NodeJS.Timeout | null;
+  setDebounceRef: (ref: NodeJS.Timeout | null) => void;
+
+  lastBoundsRef : string | null;
+  setLastBoundsRef: (bounds: string | null) => void;
 }
 
 export const useMapStore = create<MapStore>((set) => ({
@@ -55,4 +67,10 @@ export const useMapStore = create<MapStore>((set) => ({
 
   mapRef: null,
   setMapRef: (ref) => set({ mapRef: ref }),
+
+  debounceRef: null,
+  setDebounceRef: (ref) => set({ debounceRef: ref }),
+
+  lastBoundsRef: null,
+  setLastBoundsRef: (bounds) => set({ lastBoundsRef: bounds})
 }));

@@ -1,5 +1,5 @@
-import { OverpassElement } from "../types/OverpassTypes";
-import "../stylesheets/EditBenchPopup.css";
+import { OverpassElement } from "../../types/OverpassTypes";
+import "../../stylesheets/EditBenchPopup.css";
 
 interface EditBenchPopupProps {
     bench: OverpassElement;

@@ -1,4 +1,4 @@
-import benchMarkerIcon from '../assets/benchMarker.png';
+import benchMarkerIcon from '../../assets/benchMarker.png';
 
 const TitleBar = () => {
   return (

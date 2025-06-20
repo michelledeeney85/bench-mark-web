@@ -1,8 +1,8 @@
 import React from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import benchMarkerUrl from "../assets/benchMarker.png";
-import youAreHereUrl from "../assets/youAreHere.png";
+import benchMarkerUrl from "../../assets/benchMarker.png";
+import youAreHereUrl from "../../assets/youAreHere.png";
 import { Marker, useMap } from "react-leaflet";
 
 interface MapMarkerProps {

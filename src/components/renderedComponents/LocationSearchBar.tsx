@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../stylesheets/LocationSearchBar.css"; 
+import "../../stylesheets/LocationSearchBar.css"; 
 
 // Type definitions for Nominatim search results (Nominatim is an OpenStreetMap search service)
 interface NominatimResult {
