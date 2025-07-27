@@ -13,7 +13,6 @@ import { MapRefSetter } from "../helperComponents/MapRefSetter";
 import { AddBenchMapClick } from "../helperComponents/AddBenchMapClick";
 import { MapEventHandler } from "../helperComponents/MapEventHandler";
 
-
 /** Main MapView component that renders the map and its components
 * This component uses zustand store to manage the state of the map, user location, bench locations, and other map-related data
 * It also handles fetching bench locations from the Overpass API
@@ -21,35 +20,44 @@ import { MapEventHandler } from "../helperComponents/MapEventHandler";
 * It includes a title bar, toolbar, and conditionally renders the map or a loading state */
 const MapView = () => {
 
-// #region Imports from the zustand store
+  //Call the API t0 fetch updates from openbench.org (memorial bench data. Not all on osm )
+  useEffect(() => {
+    console.log("Triggering update-benches fetch");
+    fetch('http://localhost:3001/api/update-benches')
+    .then(res => res.text())
+    .then(data => console.log("API response:", data))
+    .catch(err => console.error("Fetch error:", err));
+}, []);
 
-//geo location of the user. This is used to set the initial map center, and Center On Me button
-const userGeoLocation = useMapStore((state :MapStore) => state.userGeoLocation);
-const setUserGeoLocation = useMapStore((state :MapStore) => state.setUserGeoLocation);
+  // #region Imports from the zustand store
 
-// user location is used to set the marker on the map and to center the map on the user location
-// This is updated dynamically using watchPosition
-const userLocation = useMapStore((state :MapStore) => state.userLocation);
-const setUserLocation = useMapStore((state :MapStore) => state.setUserLocation);
+  //geo location of the user. This is used to set the initial map center, and Center On Me button
+  const userGeoLocation = useMapStore((state :MapStore) => state.userGeoLocation);
+  const setUserGeoLocation = useMapStore((state :MapStore) => state.setUserGeoLocation);
 
-// Bench locations are fetched from the Overpass API and stored in the zustand store
-// This is used to render bench markers on the map
-const benchLocations = useMapStore((state :MapStore) => state.benchLocations);
+  // user location is used to set the marker on the map and to center the map on the user location
+  // This is updated dynamically using watchPosition
+  const userLocation = useMapStore((state :MapStore) => state.userLocation);
+  const setUserLocation = useMapStore((state :MapStore) => state.setUserLocation);
 
-// Map center is used to set the initial center of the map and to update it when the user moves
-const mapCenter = useMapStore((state :MapStore) => state.mapCenter);
-const setMapCenter = useMapStore((state :MapStore) => state.setMapCenter);
+  // Bench locations are fetched from the Overpass API and stored in the zustand store
+  // This is used to render bench markers on the map
+  const benchLocations = useMapStore((state :MapStore) => state.benchLocations);
 
-// Add bench mode is used to toggle the add bench mode on and off
-const addBenchMode = useMapStore((state :MapStore) => state.addBenchMode);
+  // Map center is used to set the initial center of the map and to update it when the user moves
+  const mapCenter = useMapStore((state :MapStore) => state.mapCenter);
+  const setMapCenter = useMapStore((state :MapStore) => state.setMapCenter);
 
-// function to toggle the Add Bench popup visibility
-const showAddBenchPopup = useMapStore((state :MapStore) => state.showAddBenchPopup);
+  // Add bench mode is used to toggle the add bench mode on and off
+  const addBenchMode = useMapStore((state :MapStore) => state.addBenchMode);
 
-//default zoom level for the map - hardcoded to 15
-const DEFAULT_ZOOM = useMapStore((state :MapStore) => state.DEFAULT_ZOOM);
+  // function to toggle the Add Bench popup visibility
+  const showAddBenchPopup = useMapStore((state :MapStore) => state.showAddBenchPopup);
 
-// #endregion
+  //default zoom level for the map - hardcoded to 15
+  const DEFAULT_ZOOM = useMapStore((state :MapStore) => state.DEFAULT_ZOOM);
+
+  // #endregion
 
  
   // Set the initial map center to the user's geolocation if available
