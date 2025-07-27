@@ -4,18 +4,14 @@
   "version": "1.0.0",
   "homepage": "https://michelledeeney85.github.io/bench-mark-web/",
   "scripts": {
-    "dev": "concurrently \"vite\" \"npm run start:backend\"",
+    "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
-    "start:backend": "node src/backend/server.js"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "concurrently": "^9.2.0",
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
     "leaflet": "^1.9.4",
     "node-fetch": "^3.3.2",
     "react": "^19.0.0",

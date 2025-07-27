@@ -20,15 +20,6 @@ import { MapEventHandler } from "../helperComponents/MapEventHandler";
 * It includes a title bar, toolbar, and conditionally renders the map or a loading state */
 const MapView = () => {
 
-  //Call the API t0 fetch updates from openbench.org (memorial bench data. Not all on osm )
-  useEffect(() => {
-    console.log("Triggering update-benches fetch");
-    fetch('http://localhost:3001/api/update-benches')
-    .then(res => res.text())
-    .then(data => console.log("API response:", data))
-    .catch(err => console.error("Fetch error:", err));
-}, []);
-
   // #region Imports from the zustand store
 
   //geo location of the user. This is used to set the initial map center, and Center On Me button
